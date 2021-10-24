@@ -1,0 +1,94 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+p, h1, h2, h3, h4 {
+  display: inline-block;
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 0px;
+}
+
+body {
+  background-color: rgb(253, 253, 193);
+  font-family: sans-serif;
+  color: hotpink;
+}
+
+.wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.panda_wrapper {
+  position: absolute;
+  /* margin-top: 50%;
+  margin-left: 50%; */
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  /* border: 1px solid pink; */
+  transition: 5s;
+}
+
+.panda_inner_wrapper {
+  height: 100%;
+  width: 100%;
+  transition: 0;
+  /* display: flex;
+  flex-direction: column; */
+}
+
+.panda_inner_wrapper.left { 
+  transform: scale(-1 , 1);
+}
+
+
+.panda_sprite {
+  position: absolute;
+  height: 500px;
+  width: calc(13 * 100px);
+  /* border: yellow 1px solid; */
+}
+
+.panda_sprite img {
+  height: 100px;
+  width: 100%;
+  /* border: blue 1px solid; */
+  display: block;
+}
+
+.hit_area {
+  /* position: absolute; */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hit_area > div {
+  height: 60px;
+  width: 50px;
+  border: 1px solid red;
+}
+
+.indicator {
+  position: absolute;
+  padding: 0 5px;
+  bottom: 0;
+  width: 100%;
+  height: 100px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.indicator p {
+  font-size: 10px;
+  margin: 5px;
+}
