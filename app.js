@@ -17,19 +17,21 @@ function init() {
   }
   const sprites = {
     up: 'up',
-    upleft: 'dUp',
     upright: 'dUp',
-    left: 'side',
     right: 'side',
-    downleft: 'dDown',
     downright: 'dDown',
-    down: 'down'
+    down: 'down',
+    downleft: 'dDown',
+    left: 'side',
+    upleft: 'dUp',
   }
+  const turnDirections = Object.keys(sprites)
   const vertical = ['up', 'down', '']
   const horizontal = ['left', 'right', '']
   const pandas = {}
   const frameSpeed = 150
-  const moveSpeed = 1000 * 3
+  const moveSpeed = 1000
+  // const moveSpeed = 200
   const pandaIndicators = []
   let pandaCount = 0
 
@@ -69,10 +71,11 @@ function init() {
     // panda.ready = false
   }
 
-  const moveAbout = (panda, pandaObj) =>{
+  const oldmoveAbout = (panda, pandaObj) =>{
     const randomVert = randomD(vertical)
     const randomHori = randomD(horizontal)
-    const randomDistance = Math.round(Math.random() * 100) + 50
+    // const randomDistance = Math.round(Math.random() * 100) + 50
+    const randomDistance = 100
     const { marginLeft, marginTop } = panda.style
     
     pandaObj.direction = randomVert + randomHori
@@ -103,6 +106,43 @@ function init() {
     }  
   }
 
+  const moveAbout = (panda, pandaObj) =>{
+    const turnOptions = [1, 1, -1, -1 , 0]
+    const turnValue = turnOptions[Math.floor(Math.random() * turnOptions.length)]
+    pandaObj.turnIndex += turnValue
+    if (pandaObj.turnIndex < 0) pandaObj.turnIndex = 7
+    if (pandaObj.turnIndex > 7) pandaObj.turnIndex = 0
+    pandaObj.direction = turnDirections[pandaObj.turnIndex]
+    const { direction: dir } = pandaObj
+    panda.childNodes[1].className = `panda_inner_wrapper ${dir}`
+    
+    const { marginLeft, marginTop } = panda.style
+    let x = +marginLeft.replace('px','')
+    let y = +marginTop.replace('px','')
+    
+    const randomDistance = Math.round(Math.random() * 100) + 50
+    if (dir !== 'up' && 'dir' !== 'down') x += (dir.includes('left')) ? -randomDistance : randomDistance
+    if (dir !== 'left' && 'dir' !== 'right') y += (dir.includes('up')) ? -randomDistance : randomDistance
+
+    if (panda.stop) startPanda(panda, pandaObj)
+    if (x === pandaObj.prev[0] && y === pandaObj.prev[1]){
+      console.log('trigger')
+      stopPanda(panda, pandaObj)
+    } 
+    
+    //TODO can it turn based on if close to edge? 
+    if (x > 0 && x < (body.clientWidth - 100)){
+      panda.style.marginLeft = `${x}px`
+      pandaObj.prev[0] = x
+    } 
+    if (y > 0 && y < (body.clientHeight - 100)){
+      panda.style.marginTop = `${y}px`
+      pandaObj.prev[1] = y
+    }  
+  }
+  
+  const test = 'upleft'
+  console.log(test.includes('up'))
 
   const createPanda = () =>{
     const panda = document.createElement('div')
@@ -132,6 +172,7 @@ function init() {
       direction: 'down',
       frameInterval: null,
       walkInterval: null,
+      turnIndex: 0,
       prev: [panda.style.marginLeft, panda.style.marginTop], 
     }
     const pandaObj = pandas[`panda-${pandaCount}`]
@@ -145,11 +186,13 @@ function init() {
     pandaObj.walkInterval = setInterval(()=>{
       moveAbout(panda, pandaObj)
     }, moveSpeed)
+    
+    // console.log(moveAbout(panda, pandaObj))
 
     pandaCount++
   }
   
-  new Array(5).fill('').forEach(()=> createPanda())
+  new Array(10).fill('').forEach(()=> createPanda())
 
   setInterval(()=>{
     pandaIndicators.forEach((indicator, i)=>{
@@ -224,7 +267,7 @@ function init() {
   setInterval(()=>{
     checkCollision()
   },100)
-
+  
 
 
 }

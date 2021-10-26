@@ -35,7 +35,7 @@ body {
   height: 100px;
   overflow: hidden;
   /* border: 1px solid pink; */
-  transition: 5s;
+  transition: 4s;
 }
 
 .panda_inner_wrapper {
@@ -46,7 +46,9 @@ body {
   flex-direction: column; */
 }
 
-.panda_inner_wrapper.left { 
+.upleft,
+.left,
+.downleft { 
   transform: scale(-1 , 1);
 }
 
