@@ -1,11 +1,14 @@
 function init() {
 
   //TODO change color when pandas collide
+  // TODO need to stop animation + move about each time.
   
   const body = document.querySelector('.wrapper')
   const indicator = document.querySelector('.indicator')
   const animationFrames = {
-    walk: [0, 1, 2, 1]
+    walk: [0, 1, 2, 1],
+    fall: [3, 4, 5, 6, 5, 7],
+    standUp: [7, 8, 9, 10, 11, 12]
   }
   const cellSize = 100
   const directions = {
@@ -71,42 +74,38 @@ function init() {
     // panda.ready = false
   }
 
-  const oldmoveAbout = (panda, pandaObj) =>{
-    const randomVert = randomD(vertical)
-    const randomHori = randomD(horizontal)
-    // const randomDistance = Math.round(Math.random() * 100) + 50
-    const randomDistance = 100
-    const { marginLeft, marginTop } = panda.style
-    
-    pandaObj.direction = randomVert + randomHori
+  const knockPanda = (panda, pandaObj) =>{
+    clearInterval(pandaObj.walkInterval)
+    if (pandaObj.hit) return
+    pandaObj.hit = true
+    pandaObj.frameInterval = setInterval(()=>{
+      animatePanda(panda, pandaObj, 'fall')
+    }, frameSpeed)
 
-    let x = +marginLeft.replace('px','')
-    let y = +marginTop.replace('px','')
-    
-    if (randomHori !== '') x += randomHori === 'left' ? -randomDistance : randomDistance
-    if (randomVert !== '') y += randomVert === 'up' ? -randomDistance : randomDistance
-    panda.childNodes[1].className = `panda_inner_wrapper ${randomHori}`
-
-    // console.log('x', x, 'y', y)
-    // console.log('width', body.clientWidth, 'height', body.clientHeight)
-    // console.log('randomVert randomHori', randomVert + randomHori, 'x', x, pandaObj.prev[0], 'y', y, pandaObj.prev[1])
-
-    if (panda.stop) startPanda(panda, pandaObj)
-    if ((randomVert + randomHori) === '' || (x === pandaObj.prev[0] && y === pandaObj.prev[1])){
+    setTimeout(()=>{
       stopPanda(panda, pandaObj)
-    } 
-    
-    if (x > 100 && x < (body.clientWidth - 100)){
-      panda.style.marginLeft = `${x}px`
-      pandaObj.prev[0] = x
-    } 
-    if (y > 100 && y < (body.clientHeight - 100)){
-      panda.style.marginTop = `${y}px`
-      pandaObj.prev[1] = y
-    }  
+      pandaObj.frameInterval = setInterval(()=>{
+        animatePanda(panda, pandaObj, 'standUp')
+
+        setTimeout(()=>{
+          stopPanda(panda, pandaObj)
+          pandaObj.hit = false
+          startPanda(panda, pandaObj)
+          moveAbout(panda, pandaObj)
+          clearInterval(pandaObj.walkInterval)
+          pandaObj.walkInterval = setInterval(()=>{
+            moveAbout(panda, pandaObj)
+          }, moveSpeed)
+        }, frameSpeed * 6)
+
+      }, frameSpeed)
+
+    }, (frameSpeed * 6) + 1000)
   }
 
+
   const moveAbout = (panda, pandaObj) =>{
+    if (pandaObj.hit) return
     const turnOptions = [1, 1, -1, -1 , 0]
     const turnValue = turnOptions[Math.floor(Math.random() * turnOptions.length)]
     pandaObj.turnIndex += turnValue
@@ -124,7 +123,7 @@ function init() {
     if (dir !== 'up' && 'dir' !== 'down') x += (dir.includes('left')) ? -randomDistance : randomDistance
     if (dir !== 'left' && 'dir' !== 'right') y += (dir.includes('up')) ? -randomDistance : randomDistance
 
-    if (panda.stop) startPanda(panda, pandaObj)
+    // if (panda.stop) startPanda(panda, pandaObj)
     if (x === pandaObj.prev[0] && y === pandaObj.prev[1]){
       console.log('trigger')
       stopPanda(panda, pandaObj)
@@ -141,8 +140,6 @@ function init() {
     }  
   }
   
-  const test = 'upleft'
-  console.log(test.includes('up'))
 
   const createPanda = () =>{
     const panda = document.createElement('div')
@@ -192,7 +189,7 @@ function init() {
     pandaCount++
   }
   
-  new Array(10).fill('').forEach(()=> createPanda())
+  new Array(3).fill('').forEach(()=> createPanda())
 
   setInterval(()=>{
     pandaIndicators.forEach((indicator, i)=>{
@@ -219,57 +216,133 @@ function init() {
     return area.getBoundingClientRect().x + area.clientWidth
   }
 
-  const collide = (direction, pandaDirection, areaEdge, otherEdge) =>{
-    return !!(
-      direction === pandaDirection &&
-      Math.abs(areaEdge - otherEdge) < 5 
-      ) //TODO if bottom edge and top edge match, side edges also need to match
+  const collide = (areaEdge, otherEdge, b) =>{
+    const buffer = b || 5
+    return Math.abs(areaEdge - otherEdge) < buffer
   }
 
+  // const directionIs = (dir, a, b, c) =>{
+  //   return  dir === a || 
+  //           dir === b ||
+  //           dir === c
+  // }
 
+  const collisionCheck = 
+  (area, other, edgeOne, edgeTwo, edgeThree, edgeFour, buffer) => {
+    return  collide(edgeOne(area), edgeTwo(other)) && 
+            collide(edgeThree(area), edgeThree(other), buffer) &&
+            collide(edgeFour(area), edgeFour(other), buffer) 
+  }
 
-  const checkCollision = () =>{
+  // collide(topEdge(area), bottomEdge(other)) && 
+  // collide(leftEdge(area), leftEdge(other), 25) &&
+  // collide(rightEdge(area), rightEdge(other), 25) 
+
+  const checkCollisions = () =>{
     const hitAreas = document.querySelectorAll('.hit_area')
     hitAreas.forEach((area, i)=>{
       const pandaObj = pandas[`panda-${i}`]
+      if (pandaObj.hir) return
       const { direction } = pandaObj
       // console.log(area.parentNode)
       // area.parentNode.style.borderColor = 'green'
       area.innerHTML = direction + topEdge(area)
 
       hitAreas.forEach((other, i) =>{
+        console.log('count', area) //TODO playing too many times, maybe shouldn't do forEach within a forEach 
         const panda = pandas[`panda-${i}`]
-        // console.log('panda', panda.panda)
+        let hit
+        // console.log('panda', panda.hit)
+        if (other === area || panda.hit) return
 
-        if (other === area) return
-        
-        if (collide(direction, 'up', topEdge(area), bottomEdge(other))) {
-          area.style.backgroundColor = 'red'
-          stopPanda(panda.panda, panda)
-        }
+        if (
+          (direction.includes('up') && collisionCheck(area, other, topEdge, bottomEdge, leftEdge, rightEdge, 25)) ||
+          (direction.includes('right') && collisionCheck(area, other, rightEdge, leftEdge, topEdge, bottomEdge, 30)) ||
+          (direction.includes('left') && collisionCheck(area, other, leftEdge, rightEdge, topEdge, bottomEdge, 30)) ||
+          (direction.includes('down') && collisionCheck(area, other, bottomEdge, topEdge, leftEdge, rightEdge, 25)) 
+        ) hit = true
 
-        else if (collide(direction, 'right', rightEdge(area), leftEdge(other))) {
+        if (hit) {
           area.style.backgroundColor = 'orange'
           stopPanda(panda.panda, panda)
-        } else {
-          
-          if (panda.stop) {
-            area.style.backgroundColor = 'transparent'
-            startPanda(panda.panda, panda)
-          }
-
+          knockPanda(panda.panda, panda)
+          // console.log('panda',panda)
         }
-
       })
     })
   }
   
-  setInterval(()=>{
-    checkCollision()
-  },100)
+  checkCollisions()
+  // setInterval(()=>{
+  //   checkCollisions()
+  // },100)
   
+  window.addEventListener('keyup',(e)=>{
+    const hitAreas = document.querySelectorAll('.hit_area')
+    const k = e.key.toLowerCase().replace('arrow','')[0]
+    const pObj = pandas['panda-0']
+    // console.log(panda)
+    const { turnIndex:t, panda:p } = pObj
+    if (k === 'x') pObj.turnIndex = t === 7 ? 0 : t + 1
+    if (k === 'z') pObj.turnIndex = t === 0 ? 7 : t - 1
+    
+    hitAreas[0].style.backgroundColor = 'transparent'
+    if (pObj.stop) startPanda(p, pObj)
 
+    pObj.direction = turnDirections[pObj.turnIndex]
+    const { direction: dir } = pObj
+    p.childNodes[1].className = `panda_inner_wrapper ${dir}`
+
+    const { marginLeft, marginTop } = p.style
+    let x = +marginLeft.replace('px','')
+    let y = +marginTop.replace('px','')
+
+    if (k === 'u') p.style.marginTop = `${y - 10}px`
+    if (k === 'd') p.style.marginTop = `${y + 10}px`
+    if (k === 'r') p.style.marginLeft = `${x + 10}px`
+    if (k === 'l') p.style.marginLeft = `${x - 10}px`
+
+    console.log(pandas)
+  })
 
 }
 
 window.addEventListener('DOMContentLoaded', init)
+
+
+
+
+// const oldmoveAbout = (panda, pandaObj) =>{
+//   const randomVert = randomD(vertical)
+//   const randomHori = randomD(horizontal)
+//   // const randomDistance = Math.round(Math.random() * 100) + 50
+//   const randomDistance = 100
+//   const { marginLeft, marginTop } = panda.style
+  
+//   pandaObj.direction = randomVert + randomHori
+
+//   let x = +marginLeft.replace('px','')
+//   let y = +marginTop.replace('px','')
+  
+//   if (randomHori !== '') x += randomHori === 'left' ? -randomDistance : randomDistance
+//   if (randomVert !== '') y += randomVert === 'up' ? -randomDistance : randomDistance
+//   panda.childNodes[1].className = `panda_inner_wrapper ${randomHori}`
+
+//   // console.log('x', x, 'y', y)
+//   // console.log('width', body.clientWidth, 'height', body.clientHeight)
+//   // console.log('randomVert randomHori', randomVert + randomHori, 'x', x, pandaObj.prev[0], 'y', y, pandaObj.prev[1])
+
+//   if (panda.stop) startPanda(panda, pandaObj)
+//   if ((randomVert + randomHori) === '' || (x === pandaObj.prev[0] && y === pandaObj.prev[1])){
+//     stopPanda(panda, pandaObj)
+//   } 
+  
+//   if (x > 100 && x < (body.clientWidth - 100)){
+//     panda.style.marginLeft = `${x}px`
+//     pandaObj.prev[0] = x
+//   } 
+//   if (y > 100 && y < (body.clientHeight - 100)){
+//     panda.style.marginTop = `${y}px`
+//     pandaObj.prev[1] = y
+//   }  
+// }
