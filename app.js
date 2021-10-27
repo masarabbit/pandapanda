@@ -47,13 +47,13 @@ function init() {
   }
 
   
-  const randomN = () =>{
-    return (Math.random() * 500).toFixed(2)
-  }
+  // const randomN = () =>{
+  //   return (Math.random() * 500).toFixed(2)
+  // }
 
-  const randomD = arr =>{
-    return arr[Math.floor(Math.random() * arr.length)]
-  }
+  // const randomD = arr =>{
+  //   return arr[Math.floor(Math.random() * arr.length)]
+  // }
 
   const stopPanda = (panda, pandaObj) =>{
     clearInterval(pandaObj.frameInterval)
@@ -100,7 +100,7 @@ function init() {
 
       }, frameSpeed)
 
-    }, (frameSpeed * 6) + 1000)
+    }, frameSpeed * 6)
   }
 
 
@@ -189,7 +189,7 @@ function init() {
     pandaCount++
   }
   
-  new Array(3).fill('').forEach(()=> createPanda())
+  new Array(10).fill('').forEach(()=> createPanda())
 
   setInterval(()=>{
     pandaIndicators.forEach((indicator, i)=>{
@@ -239,6 +239,7 @@ function init() {
   // collide(rightEdge(area), rightEdge(other), 25) 
 
   const checkCollisions = () =>{
+    const hit = []
     const hitAreas = document.querySelectorAll('.hit_area')
     hitAreas.forEach((area, i)=>{
       const pandaObj = pandas[`panda-${i}`]
@@ -249,20 +250,21 @@ function init() {
       area.innerHTML = direction + topEdge(area)
 
       hitAreas.forEach((other, i) =>{
-        console.log('count', area) //TODO playing too many times, maybe shouldn't do forEach within a forEach 
+        // console.log('count', area) 
+        //TODO playing too many times, maybe shouldn't do forEach within a forEach ? maybe make hit and array, push the one that hit
         const panda = pandas[`panda-${i}`]
-        let hit
+        // let hit
         // console.log('panda', panda.hit)
-        if (other === area || panda.hit) return
+        if (other === area || hit.length) return
 
         if (
           (direction.includes('up') && collisionCheck(area, other, topEdge, bottomEdge, leftEdge, rightEdge, 25)) ||
           (direction.includes('right') && collisionCheck(area, other, rightEdge, leftEdge, topEdge, bottomEdge, 30)) ||
           (direction.includes('left') && collisionCheck(area, other, leftEdge, rightEdge, topEdge, bottomEdge, 30)) ||
           (direction.includes('down') && collisionCheck(area, other, bottomEdge, topEdge, leftEdge, rightEdge, 25)) 
-        ) hit = true
+        ) hit.push(i)
 
-        if (hit) {
+        if (hit.length) {
           area.style.backgroundColor = 'orange'
           stopPanda(panda.panda, panda)
           knockPanda(panda.panda, panda)
@@ -270,12 +272,13 @@ function init() {
         }
       })
     })
+    console.log('hit', hit)
   }
   
-  checkCollisions()
-  // setInterval(()=>{
-  //   checkCollisions()
-  // },100)
+  // checkCollisions()
+  setInterval(()=>{
+    checkCollisions()
+  },100)
   
   window.addEventListener('keyup',(e)=>{
     const hitAreas = document.querySelectorAll('.hit_area')
