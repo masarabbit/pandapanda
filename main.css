@@ -57,6 +57,7 @@ body {
   position: absolute;
   height: 500px;
   width: calc(13 * 100px);
+  pointer-events: none;
   /* border: yellow 1px solid; */
 }
 
@@ -73,6 +74,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: none;
 }
 
 .hit_area {
@@ -89,9 +91,14 @@ body {
   height: 100px;
   display: flex;
   flex-wrap: wrap;
+  pointer-events: none;
 }
 
 .indicator p {
   font-size: 10px;
   margin: 5px;
+}
+
+.panda_wrapper.stop {
+  transition: 0s;
 }

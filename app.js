@@ -94,6 +94,7 @@ function init() {
           pandaObj.hit = false
           pandaObj.knocked = false
           startPanda(panda, pandaObj)
+          panda.classList.remove('stop')
           clearInterval(pandaObj.walkInterval)
           pandaObj.walkInterval = setInterval(()=>{
             moveAbout(panda, pandaObj)
@@ -257,23 +258,40 @@ function init() {
         const panda = pandas[`panda-${oI}`]
         // let hit
         // console.log('panda', panda.hit)
-        if (other === area) return
+        if (other === area || (pandaObj.hit && panda.hit)) return
 
-        if (
-          (direction.includes('up') && collisionCheck(area, other, topEdge, bottomEdge, leftEdge, rightEdge, 25)) ||
-          (direction.includes('right') && collisionCheck(area, other, rightEdge, leftEdge, topEdge, bottomEdge, 30)) ||
-          (direction.includes('left') && collisionCheck(area, other, leftEdge, rightEdge, topEdge, bottomEdge, 30)) ||
-          (direction.includes('down') && collisionCheck(area, other, bottomEdge, topEdge, leftEdge, rightEdge, 25)) 
-        ) {
-          panda.hit = true
-          pandaObj.hit = true
+        // if (
+        //   (direction.includes('up') && collisionCheck(area, other, topEdge, bottomEdge, leftEdge, rightEdge, 25)) ||
+        //   (direction.includes('right') && collisionCheck(area, other, rightEdge, leftEdge, topEdge, bottomEdge, 30)) ||
+        //   (direction.includes('left') && collisionCheck(area, other, leftEdge, rightEdge, topEdge, bottomEdge, 30)) ||
+        //   (direction.includes('down') && collisionCheck(area, other, bottomEdge, topEdge, leftEdge, rightEdge, 25)) 
+        // ) {
+        //   panda.hit = true
+        //   pandaObj.hit = true
+        // }
+        
+        if (collisionCheck(area, other, topEdge, bottomEdge, leftEdge, rightEdge, 25)){
+          pandaObj.hit = 'up'
+          panda.hit = 'bottom'
         }
+        if (collisionCheck(area, other, rightEdge, leftEdge, topEdge, bottomEdge, 30)) {
+          pandaObj.hit = 'right'
+          panda.hit = 'left'
+        }
+        if  (collisionCheck(area, other, leftEdge, rightEdge, topEdge, bottomEdge, 30)) {
+          pandaObj.hit = 'left'
+          panda.hit = 'right'
+        }
+        if  (collisionCheck(area, other, bottomEdge, topEdge, leftEdge, rightEdge, 25)) {
+          pandaObj.hit = 'down'
+          panda.hit = 'up'
+        }
+        
 
         // if (hit.length) {
         //   area.style.backgroundColor = 'orange'
         //   stopPanda(panda.panda, panda)
         //   knockPanda(panda.panda, panda)
-        //   // console.log('panda',panda)
         // }
       })
     })
@@ -281,7 +299,9 @@ function init() {
     for (let x = 0; x < pandaCount; x++){
       const p = pandas[`panda-${x}`]
       if (p.hit && !p.knocked){
-        p.panda.style.backgroundColor = 'white'
+        // p.panda.style.backgroundColor = 'white'
+        p.direction = p.hit
+        p.panda.classList.add('stop')
         stopPanda(p.panda, p)
         knockPanda(p.panda, p)
       } else {
@@ -293,7 +313,7 @@ function init() {
   // checkCollisions()
   setInterval(()=>{
     checkCollisions()
-  },100)
+  },50)
   
   window.addEventListener('keyup',(e)=>{
     const hitAreas = document.querySelectorAll('.hit_area')
@@ -323,6 +343,46 @@ function init() {
     console.log(pandas)
   })
 
+
+  const makeDraggable = (panda, pandaObj) =>{
+
+    const onDrag = e => {
+      // const { x: offSetX, y: offSetY } = body.getBoundingClientRect()
+      const newX = e.clientX
+      const newY = e.clientY
+      panda.style.marginLeft = `${newX - 50}px`
+      panda.style.marginTop = `${newY - 50}px`
+    }
+    const onLetGo = () => {
+      document.removeEventListener('mousemove', onDrag)
+      document.removeEventListener('mouseup', onLetGo)
+
+      if (!pandaObj.hit) {
+        moveAbout(panda, pandaObj)
+        clearInterval(pandaObj.walkInterval)
+        pandaObj.walkInterval = setInterval(()=>{
+          moveAbout(panda, pandaObj)
+        }, moveSpeed)
+        panda.classList.remove('stop')
+      }
+      
+    } 
+    const onGrab = () => {
+      // if (!pandaObj.hit) return
+      document.addEventListener('mousemove', onDrag)
+      document.addEventListener('mouseup', onLetGo)
+
+      clearInterval(pandaObj.walkInterval)
+      panda.classList.add('stop')
+    }
+    panda.addEventListener('mousedown', onGrab)
+  }
+  
+
+  for (let x = 0; x < pandaCount; x++){
+    const p = pandas[`panda-${x}`]
+    makeDraggable(p.panda, p)
+  }
 }
 
 window.addEventListener('DOMContentLoaded', init)
