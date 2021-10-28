@@ -79,7 +79,8 @@ function init() {
     clearInterval(pandaObj.walkInterval)
     if (pandaObj.knocked) return
     pandaObj.knocked = true
-
+    
+    stopPanda(panda, pandaObj)
     pandaObj.frameInterval = setInterval(()=>{
       animatePanda(panda, pandaObj, 'fall')
     }, frameSpeed)
@@ -87,21 +88,22 @@ function init() {
     setTimeout(()=>{
       stopPanda(panda, pandaObj)
       pandaObj.frameInterval = setInterval(()=>{
-        animatePanda(panda, pandaObj, 'standUp')
+        animatePanda(panda, pandaObj, 'standUp')  
+      }, frameSpeed)
 
-        setTimeout(()=>{
-          stopPanda(panda, pandaObj)
+        setTimeout(()=>{   
           pandaObj.hit = false
           pandaObj.knocked = false
-          startPanda(panda, pandaObj)
           panda.classList.remove('stop')
+
+          stopPanda(panda, pandaObj)
+          startPanda(panda, pandaObj)
+          
           clearInterval(pandaObj.walkInterval)
           pandaObj.walkInterval = setInterval(()=>{
             moveAbout(panda, pandaObj)
           }, moveSpeed)
         }, frameSpeed * 6)
-
-      }, frameSpeed * 6)
 
     }, frameSpeed * 6)
   }
@@ -122,7 +124,8 @@ function init() {
     let x = +marginLeft.replace('px','')
     let y = +marginTop.replace('px','')
     
-    const randomDistance = Math.round(Math.random() * 100) + 50
+    // const randomDistance = Math.round(Math.random() * 100) + 50
+    const randomDistance = 50
     if (dir !== 'up' && 'dir' !== 'down') x += (dir.includes('left')) ? -randomDistance : randomDistance
     if (dir !== 'left' && 'dir' !== 'right') y += (dir.includes('up')) ? -randomDistance : randomDistance
 
