@@ -57,6 +57,7 @@ function init() {
 
   const stopPanda = (panda, pandaObj) =>{
     clearInterval(pandaObj.frameInterval)
+    pandaObj.frame = 0
     panda.style.marginLeft = panda.style.offsetLeft
     panda.style.marginTop = panda.style.offsetTop
     pandaObj.stop = true
@@ -76,8 +77,9 @@ function init() {
 
   const knockPanda = (panda, pandaObj) =>{
     clearInterval(pandaObj.walkInterval)
-    if (pandaObj.hit) return
-    pandaObj.hit = true
+    if (pandaObj.knocked) return
+    pandaObj.knocked = true
+
     pandaObj.frameInterval = setInterval(()=>{
       animatePanda(panda, pandaObj, 'fall')
     }, frameSpeed)
@@ -90,15 +92,15 @@ function init() {
         setTimeout(()=>{
           stopPanda(panda, pandaObj)
           pandaObj.hit = false
+          pandaObj.knocked = false
           startPanda(panda, pandaObj)
-          moveAbout(panda, pandaObj)
           clearInterval(pandaObj.walkInterval)
           pandaObj.walkInterval = setInterval(()=>{
             moveAbout(panda, pandaObj)
           }, moveSpeed)
         }, frameSpeed * 6)
 
-      }, frameSpeed)
+      }, frameSpeed * 6)
 
     }, frameSpeed * 6)
   }
@@ -153,7 +155,7 @@ function init() {
         <img src="4ddown.png" alt="panda" />
         <img src="5down.png" alt="panda" />
       </div>
-      <div class="hit_wrapper"><div class="hit_area"></div></div>
+      <div class="hit_wrapper"><div class="hit_area" dataset-id="${pandaCount}" ></div></div>
     </div>
     `
     panda.style.marginTop = `${body.clientHeight / 2}px`
@@ -194,7 +196,7 @@ function init() {
   setInterval(()=>{
     pandaIndicators.forEach((indicator, i)=>{
       const { panda } = pandas[`panda-${i}`]
-      indicator.innerHTML = `panda-${i} x:${panda.offsetLeft}px y:${panda.offsetTop}px`
+      indicator.innerHTML = `panda-${i} x:${panda.offsetLeft}px y:${panda.offsetTop}px ${pandas[`panda-${i}`].hit}`
     })
   },100)
 
@@ -239,40 +241,53 @@ function init() {
   // collide(rightEdge(area), rightEdge(other), 25) 
 
   const checkCollisions = () =>{
-    const hit = []
+    // const hit = []
     const hitAreas = document.querySelectorAll('.hit_area')
-    hitAreas.forEach((area, i)=>{
-      const pandaObj = pandas[`panda-${i}`]
-      if (pandaObj.hir) return
+    hitAreas.forEach((area, aI)=>{
+      const pandaObj = pandas[`panda-${aI}`]
+      if (pandaObj.stop) return
       const { direction } = pandaObj
       // console.log(area.parentNode)
       // area.parentNode.style.borderColor = 'green'
-      area.innerHTML = direction + topEdge(area)
+      // area.innerHTML = direction + topEdge(area)
 
-      hitAreas.forEach((other, i) =>{
+      hitAreas.forEach((other, oI) =>{
         // console.log('count', area) 
         //TODO playing too many times, maybe shouldn't do forEach within a forEach ? maybe make hit and array, push the one that hit
-        const panda = pandas[`panda-${i}`]
+        const panda = pandas[`panda-${oI}`]
         // let hit
         // console.log('panda', panda.hit)
-        if (other === area || hit.length) return
+        if (other === area) return
 
         if (
           (direction.includes('up') && collisionCheck(area, other, topEdge, bottomEdge, leftEdge, rightEdge, 25)) ||
           (direction.includes('right') && collisionCheck(area, other, rightEdge, leftEdge, topEdge, bottomEdge, 30)) ||
           (direction.includes('left') && collisionCheck(area, other, leftEdge, rightEdge, topEdge, bottomEdge, 30)) ||
           (direction.includes('down') && collisionCheck(area, other, bottomEdge, topEdge, leftEdge, rightEdge, 25)) 
-        ) hit.push(i)
-
-        if (hit.length) {
-          area.style.backgroundColor = 'orange'
-          stopPanda(panda.panda, panda)
-          knockPanda(panda.panda, panda)
-          // console.log('panda',panda)
+        ) {
+          panda.hit = true
+          pandaObj.hit = true
         }
+
+        // if (hit.length) {
+        //   area.style.backgroundColor = 'orange'
+        //   stopPanda(panda.panda, panda)
+        //   knockPanda(panda.panda, panda)
+        //   // console.log('panda',panda)
+        // }
       })
     })
-    console.log('hit', hit)
+    // console.log('hit', hit)
+    for (let x = 0; x < pandaCount; x++){
+      const p = pandas[`panda-${x}`]
+      if (p.hit && !p.knocked){
+        p.panda.style.backgroundColor = 'white'
+        stopPanda(p.panda, p)
+        knockPanda(p.panda, p)
+      } else {
+        p.panda.style.backgroundColor = 'transparent'
+      }
+    }
   }
   
   // checkCollisions()
