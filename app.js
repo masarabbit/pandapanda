@@ -2,6 +2,9 @@ function init() {
 
   //TODO change color when pandas collide
   // TODO need to stop animation + move about each time.
+
+  // edit to remove start and stop of interval, and purely change animation frames and walking distance?
+  // have animation frame for static panda (all frames the same)
   
   const body = document.querySelector('.wrapper')
   const indicator = document.querySelector('.indicator')
