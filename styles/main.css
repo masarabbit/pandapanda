@@ -34,7 +34,7 @@ body {
   width: 100px;
   height: 100px;
   overflow: hidden;
-  border: 1px solid pink;
+  /* border: 1px solid pink; */
   transition: 2s;
 }
 
@@ -80,7 +80,7 @@ body {
 .hit_area {
   height: 60px;
   width: 50px;
-  /* border: 1px solid red; */
+  border: 1px solid red;
 }
 
 .indicator {
