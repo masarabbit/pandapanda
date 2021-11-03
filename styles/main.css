@@ -34,8 +34,8 @@ body {
   width: 100px;
   height: 100px;
   overflow: hidden;
-  /* border: 1px solid pink; */
-  transition: 4s;
+  border: 1px solid pink;
+  transition: 2s;
 }
 
 .panda_inner_wrapper {
@@ -100,5 +100,6 @@ body {
 }
 
 .panda_wrapper.stop {
-  transition: 0s;
+  /* border: red 1px solid; */
+  transition: 0 !important;
 }
