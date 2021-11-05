@@ -79,12 +79,20 @@ body {
   pointer-events: none;
 }
 
+
+
 .hit_area {
-  height: 70px;
-  width: 60px;
+  height: 60px;
+  width: 50px;
   display: flex;
   flex-wrap: wrap;
   border: 0px solid red;
+}
+
+.panda_wrapper.stop .hit_area {
+  margin-top: 10px;
+  height: 40px;
+  border: red 0px solid;
 }
 
 /* need to flip because the parent divs are flipped */

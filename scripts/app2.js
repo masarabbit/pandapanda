@@ -265,7 +265,7 @@ function init() {
   }
 
   const overlap = (a, b) =>{
-    const buffer = 30
+    const buffer = 20
     return Math.abs(a - b) < buffer
   }
 
