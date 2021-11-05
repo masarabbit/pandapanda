@@ -85,7 +85,7 @@ function init() {
     let x = pandaMarginLeft(panda)
     let y = pandaMarginTop(panda)
 
-    const distance = 30
+    const distance = 50
     if (pandaObj.hit.includes('left')) x += distance
     if (pandaObj.hit.includes('right')) x -= distance
     if (pandaObj.hit.includes('up')) y += distance
