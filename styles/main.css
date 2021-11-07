@@ -16,7 +16,6 @@ p, h1, h2, h3, h4 {
 body {
   background-color: #82e4fc;
   font-family: sans-serif;
-  color: hotpink;
 }
 
 .wrapper {
@@ -34,9 +33,9 @@ body {
   transition: 2s;
 }
 
-.panda_wrapper svg {
-  fill: navy;
-}
+.panda_wrapper svg { fill: navy; }
+
+.panda_wrapper.stop { transition: 0 !important; }
 
 .panda_inner_wrapper {
   height: 100%;
@@ -49,9 +48,6 @@ body {
 .facing_downleft { 
   transform: scale(-1 , 1);
 }
-
-
-
 
 .panda_sprite {
   position: absolute;
@@ -74,20 +70,16 @@ body {
   pointer-events: none;
 }
 
-
-
 .hit_area {
   height: 50px;
   width: 40px;
   display: flex;
   flex-wrap: wrap;
-  border: 0px solid red;
 }
 
 .panda_wrapper.stop .hit_area {
   margin-top: 10px;
   height: 40px;
-  border: red 0px solid;
 }
 
 /* need to flip because the parent divs are flipped */
@@ -101,10 +93,6 @@ body {
   height: 50%;
   width: 50%;
   opacity: 0.1;
-}
-
-.panda_wrapper.stop {
-  transition: 0 !important;
 }
 
 .sign {
@@ -121,9 +109,7 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  text-decoration: underline;
-}
+a:hover { text-decoration: underline; }
 
 
 /* .upleft {
