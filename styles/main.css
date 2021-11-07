@@ -14,7 +14,7 @@ p, h1, h2, h3, h4 {
 }
 
 body {
-  background-color: #fdcece;
+  background-color: #82e4fc;
   font-family: sans-serif;
   color: hotpink;
 }
@@ -24,33 +24,33 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  /* border: red 1px solid; */
 }
 
 .panda_wrapper {
   position: absolute;
-  /* margin-top: 50%;
-  margin-left: 50%; */
   width: 100px;
   height: 100px;
   overflow: hidden;
-  /* border: 1px solid pink; */
   transition: 2s;
+}
+
+.panda_wrapper svg {
+  fill: navy;
 }
 
 .panda_inner_wrapper {
   height: 100%;
   width: 100%;
   transition: 0;
-  /* display: flex;
-  flex-direction: column; */
 }
 
-.upleft,
-.left,
-.downleft { 
+.facing_upleft,
+.facing_left,
+.facing_downleft { 
   transform: scale(-1 , 1);
 }
+
+
 
 
 .panda_sprite {
@@ -58,32 +58,91 @@ body {
   height: 500px;
   width: calc(13 * 100px);
   pointer-events: none;
-  /* border: yellow 1px solid; */
 }
 
 .panda_sprite img {
   height: 100px;
   width: 100%;
-  /* border: blue 1px solid; */
   display: block;
 }
 
 .hit_wrapper {
   height: 100%;
-  /* border: pink 1px solid; */
   display: flex;
   justify-content: center;
   align-items: center;
   pointer-events: none;
 }
 
+
+
 .hit_area {
-  height: 60px;
-  width: 50px;
-  border: 1px solid red;
+  height: 50px;
+  width: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  border: 0px solid red;
 }
 
-.indicator {
+.panda_wrapper.stop .hit_area {
+  margin-top: 10px;
+  height: 40px;
+  border: red 0px solid;
+}
+
+/* need to flip because the parent divs are flipped */
+.facing_upleft .hit_area,
+.facing_left .hit_area,
+.facing_downleft .hit_area {
+  transform: scale(-1 , 1);
+}
+
+.hit_corner {
+  height: 50%;
+  width: 50%;
+  opacity: 0.1;
+}
+
+.panda_wrapper.stop {
+  transition: 0 !important;
+}
+
+.sign {
+  position: fixed;
+  font-family: Arial, Helvetica, sans-serif;
+  color: navy;
+  bottom: 10px;
+  right: 10px;
+  font-size: 10px;
+}
+
+a {
+  color: navy;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+/* .upleft {
+  border: 1px solid yellow;
+}
+
+.upright {
+  border: 1px solid rgb(0, 255, 179);
+}
+
+.downleft {
+  border: 1px solid rgb(224, 152, 123);
+}
+
+.downright {
+  border: 1px solid rgb(84, 51, 85);
+} */
+
+/* .indicator {
   position: absolute;
   padding: 0 5px;
   bottom: 0;
@@ -97,9 +156,4 @@ body {
 .indicator p {
   font-size: 10px;
   margin: 5px;
-}
-
-.panda_wrapper.stop {
-  /* border: red 1px solid; */
-  transition: 0 !important;
-}
+} */

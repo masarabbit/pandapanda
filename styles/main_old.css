@@ -46,13 +46,11 @@ body {
   flex-direction: column; */
 }
 
-.facing_upleft,
-.facing_left,
-.facing_downleft { 
+.upleft,
+.left,
+.downleft { 
   transform: scale(-1 , 1);
 }
-
-
 
 
 .panda_sprite {
@@ -79,51 +77,11 @@ body {
   pointer-events: none;
 }
 
-
-
 .hit_area {
-  height: 50px;
-  width: 40px;
-  display: flex;
-  flex-wrap: wrap;
-  border: 0px solid red;
+  height: 60px;
+  width: 50px;
+  border: 1px solid red;
 }
-
-.panda_wrapper.stop .hit_area {
-  margin-top: 10px;
-  height: 40px;
-  border: red 0px solid;
-}
-
-/* need to flip because the parent divs are flipped */
-.facing_upleft .hit_area,
-.facing_left .hit_area,
-.facing_downleft .hit_area {
-  transform: scale(-1 , 1);
-}
-
-.hit_corner {
-  height: 50%;
-  width: 50%;
-  opacity: 0.1;
-}
-
-
-/* .upleft {
-  border: 1px solid yellow;
-}
-
-.upright {
-  border: 1px solid rgb(0, 255, 179);
-}
-
-.downleft {
-  border: 1px solid rgb(224, 152, 123);
-}
-
-.downright {
-  border: 1px solid rgb(84, 51, 85);
-} */
 
 .indicator {
   position: absolute;
