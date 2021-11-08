@@ -9,12 +9,7 @@ function init() {
   }
 
   const decodeRef = { a: ' h 1', b: ' h 2', e: ' h 3', g: ' h 4', j: ' h 5', A: ' v 1', B: ' v 2', E: ' v 3', G: ' v 4', J: ' v 5', n: 'h -1', u: ' h -2', k: ' h -3', x: ' h -4', i: ' h -5', N: ' v -1', U: ' v -2', K: ' v -3', X: ' v -4', I: ' v -5', w: ' v ', W: ' h ', D: '<path d="M', o: '<path fill="pink" d="M', F: '<path fill="#fff" d="M', '/': '/>', d: '<path d="M', f: '<path fill="#fff" d="M'}
-  const decode = arr =>{
-    return arr.split('').map(c=>{
-      if (!decodeRef[c]) return c
-      return decodeRef[c]
-    }).join('')
-  }
+  const decode = arr => arr.split('').map(c=> !decodeRef[c] ? c : decodeRef[c]).join('')
 
   const body = document.querySelector('.wrapper')
   const animationFrames = {
@@ -45,6 +40,7 @@ function init() {
   const turnDirections = Object.keys(sprites)
   const pandas = {}
   const pandaImpact = 80
+  const frameSpeed = 140
   let pandaCount = 0
   
   const animatePanda = (panda, pandaObj) =>{
@@ -113,9 +109,9 @@ function init() {
     slidePanda(panda, pandaObj)
     changeAnimation(pandaObj, 'fall')
 
-    const a = 150 * 6
+    const a = frameSpeed * 6
     const b = 1000 * (Math.ceil(Math.random() * 4) + 1)
-    const c = 150 * 6
+    const c = frameSpeed * 6
 
     pandaObj.frameTimer = setTimeout(()=>{
       changeAnimation(pandaObj, 'fallen')
@@ -215,7 +211,7 @@ function init() {
       frameTimer: null,
       moveTimer: null,
       turnIndex: 0,
-      frameSpeed: 150,
+      frameSpeed,
       defaultFallDirection: turnDirections[Math.floor(Math.random() * turnDirections.length)],
       moveSpeed: randomMoveSpeed(),
       prev: [panda.style.marginLeft, panda.style.marginTop], 
