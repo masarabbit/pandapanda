@@ -14,7 +14,7 @@ p, h1, h2, h3, h4 {
 }
 
 body {
-  background-color: #82e4fc;
+  background-color: rgb(255, 151, 186);
   font-family: sans-serif;
 }
 
@@ -33,7 +33,7 @@ body {
   transition: 2s;
 }
 
-.panda_wrapper svg { fill: navy; }
+.panda_wrapper svg { fill: rgb(173, 1, 87); }
 
 .panda_wrapper.stop { transition: 0 !important; }
 
@@ -98,14 +98,14 @@ body {
 .sign {
   position: fixed;
   font-family: Arial, Helvetica, sans-serif;
-  color: navy;
+  color: white;
   bottom: 10px;
   right: 10px;
   font-size: 10px;
 }
 
 a {
-  color: navy;
+  color: white;
   text-decoration: none;
 }
 
