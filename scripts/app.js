@@ -133,7 +133,7 @@ function init() {
 
   const moveAbout = (panda, pandaObj) =>{
     if (pandaObj.hit) return
-    const turnOptions = [1, 1, -1, -1 , 0]
+    const turnOptions = [1, 1, -1, -1, 0]
     const turnValue = turnOptions[Math.floor(Math.random() * turnOptions.length)]
     pandaObj.turnIndex += turnValue
     if (pandaObj.turnIndex < 0) pandaObj.turnIndex = 7
@@ -183,6 +183,10 @@ function init() {
     }).join('')
   }
 
+  const randomDirection = () =>{
+    return turnDirections[Math.floor(Math.random() * turnDirections.length)]
+  }
+
   const createPanda = (x, y) =>{
     const panda = document.createElement('div')
     panda.className = 'panda_wrapper'
@@ -207,12 +211,12 @@ function init() {
       panda,
       animation: 'walk',
       frame: 0, 
-      direction: 'down',
+      direction: randomDirection(),
       frameTimer: null,
       moveTimer: null,
-      turnIndex: 0,
+      turnIndex: Math.floor(Math.random() * 7),
       frameSpeed,
-      defaultFallDirection: turnDirections[Math.floor(Math.random() * turnDirections.length)],
+      defaultFallDirection: randomDirection(),
       moveSpeed: randomMoveSpeed(),
       prev: [panda.style.marginLeft, panda.style.marginTop], 
     }
