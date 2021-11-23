@@ -77,7 +77,7 @@ function init() {
 
   const checkBoundaryAndUpdatePandaPos = (x, y, panda, pandaObj) =>{
     const lowerLimit = -40
-    const upperLimit = 40
+    const upperLimit = 60
 
     if (x > lowerLimit && x < (body.clientWidth - upperLimit)){
       panda.style.marginLeft = `${x}px`
@@ -150,7 +150,6 @@ function init() {
     if (dir !== 'left' && 'dir' !== 'right') y += (dir.includes('up')) ? -distance : distance
 
     if (x === pandaObj.prev[0] && y === pandaObj.prev[1]){
-      console.log('trigger')
       stopPanda(panda, pandaObj)
     } 
     
@@ -288,7 +287,7 @@ function init() {
       hitCheck(downleft && downright, panda, 'down')
       hitCheck(upleft && upright && downleft && downright, panda, panda.defaultFallDirection )
 
-      if ( upleft || upright || downleft || downright && !panda.knocked) {
+      if ( (upleft || upright || downleft || downright) && !panda.knocked) {
         pandas[i].panda.classList.add('stop')
         const { direction } = panda
         panda.panda.childNodes[1].className = `panda_inner_wrapper facing_${direction}`
