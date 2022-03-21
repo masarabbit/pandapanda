@@ -45,7 +45,10 @@ body {
   transition: 2s;
 }
 
-.panda_wrapper svg { fill: rgb(173, 1, 87); }
+.panda_wrapper svg { 
+  fill: rgb(173, 1, 87); 
+  display: block;
+}
 
 .panda_wrapper.stop { transition: 0 !important; }
 
@@ -60,6 +63,7 @@ body {
 .facing_downleft { 
   transform: scale(-1 , 1);
 }
+
 
 .panda_sprite {
   position: absolute;
